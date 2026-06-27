@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: API Servicio de Estadisticas - UTN GolMundial 2026
+  description: API para selecciones, grupos, sedes, partidos, calendario, resultados y posiciones
+  version: 1.0.0
+servers:
+  - url: /demo/api
+paths:
+  /selecciones:
+    get:
+      summary: Listar todas las selecciones
+      tags: [Selecciones]
+      responses:
+        '200':
+          description: Lista de selecciones
+  /selecciones/{id}:
+    get:
+      summary: Obtener una seleccion por ID
+      tags: [Selecciones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Seleccion encontrada
+        '404':
+          description: Seleccion no encontrada
+  /selecciones/grupo/{codigo}:
+    get:
+      summary: Listar selecciones de un grupo ordenadas por posicion
+      tags: [Selecciones]
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: A
+      responses:
+        '200':
+          description: Selecciones del grupo ordenadas por tabla de posiciones
+  /grupos:
+    get:
+      summary: Listar todos los grupos con sus selecciones
+      tags: [Grupos]
+      responses:
+        '200':
+          description: Lista de grupos
+  /grupos/{codigo}:
+    get:
+      summary: Obtener un grupo por codigo A-L
+      tags: [Grupos]
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: A
+      responses:
+        '200':
+          description: Grupo encontrado
+        '404':
+          description: Grupo no encontrado
+  /partidos:
+    get:
+      summary: Listar todos los partidos
+      tags: [Partidos]
+      responses:
+        '200':
+          description: Lista de partidos
