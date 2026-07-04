@@ -13,10 +13,13 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
+    @Column(length = 150)
+    private String nombre;
+
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(unique = true, length = 150)
     private String email;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -27,7 +30,11 @@ public class Usuario {
     private LocalDateTime fechaCreacion;
 
     @PrePersist
-    protected void onCreate() { this.fechaCreacion = LocalDateTime.now(); }
+    protected void onCreate() {
+        if (this.fechaCreacion == null) {
+            this.fechaCreacion = LocalDateTime.now();
+        }
+    }
 
     public Usuario() {}
 
@@ -35,6 +42,8 @@ public class Usuario {
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
     public String getEmail() { return email; }
