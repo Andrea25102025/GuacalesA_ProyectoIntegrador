@@ -47,6 +47,8 @@ public class UtnGolCoinClient {
                     .uri(URI.create(baseUrl() + ruta))
                     .timeout(Duration.ofSeconds(10))
                     .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("User-Agent", "Guacales-Estadisticas/1.0 (UTNGolCoin-client)")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
