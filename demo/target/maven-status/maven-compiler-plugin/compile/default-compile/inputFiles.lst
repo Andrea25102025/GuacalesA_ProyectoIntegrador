@@ -1,3 +1,7 @@
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/config/ApplicationConfig.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/dto/GrupoDTO.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/dto/PartidoDTO.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/dto/SeleccionDTO.java
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Auditoria.java
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Grupo.java
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Partido.java
@@ -5,3 +9,9 @@
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Sede.java
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Seleccion.java
 /home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/model/Usuario.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/repository/GrupoRepository.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/repository/PartidoRepository.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/repository/SeleccionRepository.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/rest/GrupoResource.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/rest/PartidoResource.java
+/home/andrea/GuacalesA_ProyectoIntegrador/demo/src/main/java/ec/edu/utng/guacales/rest/SeleccionResource.java
