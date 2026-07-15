@@ -9,3 +9,9 @@ target/
 
 # Logs
 *.log
+
+# Frontends ASP.NET
+**/bin/
+**/obj/
+.vs/
+*.user
