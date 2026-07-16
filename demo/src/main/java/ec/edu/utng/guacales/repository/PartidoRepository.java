@@ -1,11 +1,11 @@
 package ec.edu.utng.guacales.repository;
 
 import ec.edu.utng.guacales.model.Partido;
-import ec.edu.utng.guacales.model.Seleccion;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.List;
 
 @ApplicationScoped
@@ -15,71 +15,35 @@ public class PartidoRepository {
     private EntityManager em;
 
     private static final String BASE_QUERY =
-        "SELECT p FROM Partido p " +
-        "JOIN FETCH p.seleccionLocal " +
-        "JOIN FETCH p.seleccionVisitante " +
-        "JOIN FETCH p.sede " +
-        "LEFT JOIN FETCH p.grupo ";
+            "SELECT p FROM Partido p " +
+            "LEFT JOIN FETCH p.seleccionLocal " +
+            "LEFT JOIN FETCH p.seleccionVisitante " +
+            "LEFT JOIN FETCH p.sede " +
+            "LEFT JOIN FETCH p.grupo " +
+            "WHERE 1=1";
 
-    public List<Partido> listarTodos() {
-        return em.createQuery(BASE_QUERY + "ORDER BY p.fechaPartido", Partido.class)
-                .getResultList();
+    public List<Partido> listar(String estado, String grupoNombre, String fase, LocalDate fecha) {
+        StringBuilder jpql = new StringBuilder(BASE_QUERY);
+        if (estado != null) jpql.append(" AND p.estado = :estado");
+        if (grupoNombre != null) jpql.append(" AND p.grupo.nombre = :grupoNombre");
+        if (fase != null) jpql.append(" AND p.fase = :fase");
+        if (fecha != null) jpql.append(" AND FUNCTION('DATE', p.fechaPartido) = :fecha");
+        jpql.append(" ORDER BY p.fechaPartido");
+
+        TypedQuery<Partido> query = em.createQuery(jpql.toString(), Partido.class);
+        if (estado != null) query.setParameter("estado", estado);
+        if (grupoNombre != null) query.setParameter("grupoNombre", grupoNombre);
+        if (fase != null) query.setParameter("fase", fase);
+        if (fecha != null) query.setParameter("fecha", fecha);
+
+        return query.getResultList();
     }
 
     public Partido buscarPorId(Long id) {
-        return em.createQuery(BASE_QUERY + "WHERE p.id = :id", Partido.class)
-                .setParameter("id", id)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-    }
-
-    public List<Partido> listarPorGrupo(String codigoGrupo) {
-        return em.createQuery(BASE_QUERY + "WHERE p.grupo.codigo = :codigo ORDER BY p.fechaPartido",
-                Partido.class)
-                .setParameter("codigo", codigoGrupo)
-                .getResultList();
-    }
-
-    @Transactional
-    public Partido registrarResultado(Long partidoId, int golesLocal, int golesVisitante) {
-        Partido partido = em.find(Partido.class, partidoId);
-        if (partido == null) {
-            return null;
-        }
-        if ("FINALIZADO".equals(partido.getEstado())) {
-            throw new IllegalStateException("Este partido ya tiene un resultado registrado");
-        }
-
-        partido.setGolesLocal(golesLocal);
-        partido.setGolesVisitante(golesVisitante);
-        partido.setEstado("FINALIZADO");
-
-        Seleccion local = partido.getSeleccionLocal();
-        Seleccion visitante = partido.getSeleccionVisitante();
-
-        local.setPartidosJugados(local.getPartidosJugados() + 1);
-        visitante.setPartidosJugados(visitante.getPartidosJugados() + 1);
-        local.setGolesFavor(local.getGolesFavor() + golesLocal);
-        local.setGolesContra(local.getGolesContra() + golesVisitante);
-        visitante.setGolesFavor(visitante.getGolesFavor() + golesVisitante);
-        visitante.setGolesContra(visitante.getGolesContra() + golesLocal);
-
-        if (golesLocal > golesVisitante) {
-            local.setPartidosGanados(local.getPartidosGanados() + 1);
-            local.setPuntos(local.getPuntos() + 3);
-            visitante.setPartidosPerdidos(visitante.getPartidosPerdidos() + 1);
-        } else if (golesLocal < golesVisitante) {
-            visitante.setPartidosGanados(visitante.getPartidosGanados() + 1);
-            visitante.setPuntos(visitante.getPuntos() + 3);
-            local.setPartidosPerdidos(local.getPartidosPerdidos() + 1);
-        } else {
-            local.setPartidosEmpatados(local.getPartidosEmpatados() + 1);
-            visitante.setPartidosEmpatados(visitante.getPartidosEmpatados() + 1);
-            local.setPuntos(local.getPuntos() + 1);
-            visitante.setPuntos(visitante.getPuntos() + 1);
-        }
-
-        return partido;
+        TypedQuery<Partido> query = em.createQuery(
+                BASE_QUERY + " AND p.id = :id", Partido.class);
+        query.setParameter("id", id);
+        List<Partido> resultado = query.getResultList();
+        return resultado.isEmpty() ? null : resultado.get(0);
     }
 }
