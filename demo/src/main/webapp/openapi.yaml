@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Servicio de Estadisticas - UTN GolMundial 2026
-  description: API del Servicio de Estadisticas. Autenticacion, selecciones, grupos, partidos, resultados y estadisticas.
+  description: API del Servicio de Estadisticas. Autenticacion, selecciones, grupos, sedes, partidos, resultados y estadisticas.
   version: 1.0.0
 servers:
   - url: /demo/api/v1
@@ -69,6 +69,28 @@ paths:
       responses:
         '200':
           description: Grupos con posiciones actualizadas
+  /sedes:
+    get:
+      summary: Listar las sedes del torneo
+      tags: [Sedes]
+      responses:
+        '200':
+          description: Lista de sedes
+  /sedes/{id}:
+    get:
+      summary: Obtener una sede por ID
+      tags: [Sedes]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sede encontrada
+        '404':
+          description: Sede no encontrada
   /partidos:
     get:
       summary: Listar el calendario de partidos
