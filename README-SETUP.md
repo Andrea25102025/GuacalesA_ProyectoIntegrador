@@ -150,3 +150,5 @@ Para desarrollo integrado: `make run` desde la raíz (si hay `Makefile`) o dos t
 
 - [Consumo de la API](docs/CONSUMO-FRONTEND-PUBLICO.md)
 - [Checklist de humo](docs/CHECKLIST-HUMO-FRONTEND.md)
+
+- [Consumo frontend administrativo](docs/CONSUMO-FRONTEND-ADMIN.md)
