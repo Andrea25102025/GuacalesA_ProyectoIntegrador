@@ -145,3 +145,8 @@ cd frontend-publico-mvc && dotnet run       # http://localhost:5081
 Ambos apuntan por defecto a esta API en `http://localhost:8080/demo/api/v1/`.
 Con `Servicios:Estadisticas:UsarSimulado=true` (valor por defecto) usan datos en memoria sin WildFly.
 Para desarrollo integrado: `make run` desde la raíz (si hay `Makefile`) o dos terminales.
+
+## Aportes del frontend público
+
+- [Consumo de la API](docs/CONSUMO-FRONTEND-PUBLICO.md)
+- [Checklist de humo](docs/CHECKLIST-HUMO-FRONTEND.md)
