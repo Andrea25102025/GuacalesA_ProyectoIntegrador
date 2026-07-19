@@ -125,3 +125,20 @@ http://localhost:8080/demo/swagger-ui.html
 - CORS está habilitado (`Access-Control-Allow-Origin: *`), así que tu app puede llamar directo a estos endpoints sin bloqueos del navegador.
 - Cuando levantes el proyecto en tu propia máquina, `localhost:8080` te sirve directo — no necesitas la IP de red de nadie más.
 - Pendiente por integrar: notificación automática a UTNGolCoin al registrar un usuario (bono de bienvenida de 10 UTNGolCoin) — marcado como `// TODO` en `AuthService.java`.
+
+## Frontends públicos (espejo Persona 4)
+
+Este repositorio incluye una copia de los dos frontends ASP.NET del equipo:
+
+| App | Puerto | Rol |
+|---|---|---|
+| `frontend-estadisticas-mvc` | 5080 | Solo estadísticas, acceso invitado |
+| `frontend-publico-mvc` | 5081 | Estadísticas + apuestas (registro obligatorio) |
+
+```bash
+cd frontend-estadisticas-mvc && dotnet run   # http://localhost:5080
+cd frontend-publico-mvc && dotnet run       # http://localhost:5081
+```
+
+Ambos apuntan por defecto a esta API en `http://localhost:8080/demo/api/v1/`.
+Con `Servicios:Estadisticas:UsarSimulado=true` (valor por defecto) usan datos en memoria sin WildFly.
