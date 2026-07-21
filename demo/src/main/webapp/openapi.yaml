@@ -118,6 +118,52 @@ paths:
       responses:
         '200':
           description: Lista de partidos
+    post:
+      summary: Crear un nuevo partido
+      tags: [Partidos]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [seleccionLocalId, seleccionVisitanteId, sedeId, fechaHora, fase]
+              properties:
+                numeroPartidoFifa:
+                  type: integer
+                  example: 15
+                seleccionLocalId:
+                  type: integer
+                  example: 1
+                seleccionVisitanteId:
+                  type: integer
+                  example: 2
+                sedeId:
+                  type: integer
+                  example: 3
+                grupoId:
+                  type: integer
+                  example: 1
+                fechaHora:
+                  type: string
+                  example: "2026-06-15T18:00:00"
+                fase:
+                  type: string
+                  example: GRUPOS
+                cuotaLocal:
+                  type: number
+                  example: 1.85
+                cuotaEmpate:
+                  type: number
+                  example: 3.20
+                cuotaVisitante:
+                  type: number
+                  example: 4.10
+      responses:
+        '201':
+          description: Partido creado
+        '422':
+          description: Datos incompletos o invalidos
   /partidos/{partidoId}:
     get:
       summary: Consultar el detalle de un partido
@@ -133,6 +179,54 @@ paths:
           description: Detalle del partido
         '404':
           description: Partido no encontrado
+    put:
+      summary: Editar los datos generales de un partido
+      description: Permite actualizar fecha, sede, selecciones, grupo, fase, estado y cuotas. Solo se actualizan los campos enviados en el cuerpo de la peticion.
+      tags: [Partidos]
+      parameters:
+        - name: partidoId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                numeroPartidoFifa:
+                  type: integer
+                seleccionLocalId:
+                  type: integer
+                seleccionVisitanteId:
+                  type: integer
+                sedeId:
+                  type: integer
+                grupoId:
+                  type: integer
+                fechaHora:
+                  type: string
+                  example: "2026-06-15T18:00:00"
+                fase:
+                  type: string
+                estado:
+                  type: string
+                  enum: [PROGRAMADO, EN_JUEGO, FINALIZADO]
+                cuotaLocal:
+                  type: number
+                cuotaEmpate:
+                  type: number
+                cuotaVisitante:
+                  type: number
+      responses:
+        '200':
+          description: Partido actualizado
+        '404':
+          description: Partido no encontrado
+        '422':
+          description: Datos invalidos
   /partidos/{partidoId}/resultado:
     put:
       summary: Registrar el resultado oficial de un partido

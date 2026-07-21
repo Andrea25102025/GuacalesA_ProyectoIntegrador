@@ -5,6 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,12 +16,12 @@ public class PartidoRepository {
     private EntityManager em;
 
     private static final String BASE_QUERY =
-            "SELECT p FROM Partido p " +
-            "LEFT JOIN FETCH p.seleccionLocal " +
-            "LEFT JOIN FETCH p.seleccionVisitante " +
-            "LEFT JOIN FETCH p.sede " +
-            "LEFT JOIN FETCH p.grupo " +
-            "WHERE 1=1";
+    "SELECT p FROM Partido p " +
+    "LEFT JOIN FETCH p.seleccionLocal " +
+    "LEFT JOIN FETCH p.seleccionVisitante " +
+    "LEFT JOIN FETCH p.sede " +
+    "LEFT JOIN FETCH p.grupo " +
+    "WHERE 1=1";
 
     public List<Partido> listar(String estado, String grupoNombre, String fase, LocalDate fecha) {
         StringBuilder jpql = new StringBuilder(BASE_QUERY);
@@ -41,9 +42,23 @@ public class PartidoRepository {
 
     public Partido buscarPorId(Long id) {
         TypedQuery<Partido> query = em.createQuery(
-                BASE_QUERY + " AND p.id = :id", Partido.class);
+        BASE_QUERY + " AND p.id = :id", Partido.class);
         query.setParameter("id", id);
         List<Partido> resultado = query.getResultList();
         return resultado.isEmpty() ? null : resultado.get(0);
+    }
+
+    @Transactional
+    public Partido crear(Partido partido) {
+        em.persist(partido);
+        em.flush();
+        return partido;
+    }
+
+    @Transactional
+    public Partido actualizar(Partido partido) {
+        Partido actualizado = em.merge(partido);
+        em.flush();
+        return actualizado;
     }
 }

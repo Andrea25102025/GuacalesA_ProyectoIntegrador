@@ -14,18 +14,28 @@ public class GrupoRepository {
 
     public List<Grupo> listarTodos() {
         return em.createQuery(
-                "SELECT DISTINCT g FROM Grupo g LEFT JOIN FETCH g.selecciones ORDER BY g.codigo",
-                Grupo.class)
-                .getResultList();
+        "SELECT DISTINCT g FROM Grupo g LEFT JOIN FETCH g.selecciones ORDER BY g.codigo",
+        Grupo.class)
+                    .getResultList();
     }
 
     public Grupo buscarPorCodigo(String codigo) {
         return em.createQuery(
-                "SELECT DISTINCT g FROM Grupo g LEFT JOIN FETCH g.selecciones WHERE g.codigo = :codigo",
-                Grupo.class)
-                .setParameter("codigo", codigo)
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
+        "SELECT DISTINCT g FROM Grupo g LEFT JOIN FETCH g.selecciones WHERE g.codigo = :codigo",
+        Grupo.class)
+                    .setParameter("codigo", codigo)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+    }
+
+    public Grupo buscarPorId(Long id) {
+        return em.createQuery(
+        "SELECT DISTINCT g FROM Grupo g LEFT JOIN FETCH g.selecciones WHERE g.id = :id",
+        Grupo.class)
+                    .setParameter("id", id)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
     }
 }

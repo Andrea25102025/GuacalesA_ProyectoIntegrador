@@ -1,5 +1,7 @@
 package ec.edu.utng.guacales.dto;
 
+import java.util.List;
+
 public class PartidoDTO {
     private Long id;
     private SeleccionDTO seleccionLocal;
@@ -12,6 +14,7 @@ public class PartidoDTO {
     private Integer golesLocal;
     private Integer golesVisitante;
     private CuotasPartidoDTO cuotas;
+    private List<GoleadorDTO> goleadores;
 
     public PartidoDTO() {}
 
@@ -37,4 +40,6 @@ public class PartidoDTO {
     public void setGolesVisitante(Integer golesVisitante) { this.golesVisitante = golesVisitante; }
     public CuotasPartidoDTO getCuotas() { return cuotas; }
     public void setCuotas(CuotasPartidoDTO cuotas) { this.cuotas = cuotas; }
+    public List<GoleadorDTO> getGoleadores() { return goleadores; }
+    public void setGoleadores(List<GoleadorDTO> goleadores) { this.goleadores = goleadores; }
 }
