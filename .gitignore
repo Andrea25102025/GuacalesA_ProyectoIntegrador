@@ -1,11 +1,14 @@
 # Maven
 target/
 *.class
-
 # IDE
 .vscode/
 *.iml
 .idea/
-
 # Logs
 *.log
+# Frontends ASP.NET
+**/bin/
+**/obj/
+.vs/
+*.user
