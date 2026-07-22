@@ -39,6 +39,13 @@ public class PartidoRepository {
         List<Partido> resultado = query.getResultList();
         return resultado.isEmpty() ? null : resultado.get(0);
     }
+    public Partido buscarPorNumeroFifa(Integer numeroPartidoFifa) {
+        TypedQuery<Partido> query = em.createQuery(
+                BASE_QUERY + " AND p.numeroPartidoFifa = :numero", Partido.class);
+        query.setParameter("numero", numeroPartidoFifa);
+        List<Partido> resultado = query.getResultList();
+        return resultado.isEmpty() ? null : resultado.get(0);
+    }
     @Transactional
     public Partido crear(Partido partido) {
         em.persist(partido);
@@ -50,5 +57,10 @@ public class PartidoRepository {
         Partido actualizado = em.merge(partido);
         em.flush();
         return actualizado;
+    }
+    @Transactional
+    public void eliminar(Partido partido) {
+        Partido gestionado = em.merge(partido);
+        em.remove(gestionado);
     }
 }

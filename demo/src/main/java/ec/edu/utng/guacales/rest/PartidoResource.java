@@ -80,6 +80,19 @@ public class PartidoResource {
         Response validacion = validarRequest(request, true);
         if (validacion != null) return validacion;
 
+        if (request.getNumeroPartidoFifa() != null) {
+            if (request.getNumeroPartidoFifa() < 1 || request.getNumeroPartidoFifa() > 104) {
+                return Response.status(422)
+                        .entity("{\"codigo\":\"NUMERO_FIFA_INVALIDO\",\"mensaje\":\"numeroPartidoFifa debe estar entre 1 y 104\"}")
+                        .build();
+            }
+            if (repository.buscarPorNumeroFifa(request.getNumeroPartidoFifa()) != null) {
+                return Response.status(409)
+                        .entity("{\"codigo\":\"NUMERO_FIFA_DUPLICADO\",\"mensaje\":\"Ya existe un partido con ese numeroPartidoFifa\"}")
+                        .build();
+            }
+        }
+
         Seleccion local = seleccionRepository.buscarPorId(request.getSeleccionLocalId());
         Seleccion visitante = seleccionRepository.buscarPorId(request.getSeleccionVisitanteId());
         Sede sede = sedeRepository.buscarPorId(request.getSedeId());
@@ -184,7 +197,22 @@ public class PartidoResource {
         if (request.getFechaHora() != null) p.setFechaPartido(parsearFecha(request.getFechaHora()));
         if (request.getFase() != null) p.setFase(request.getFase());
         if (request.getEstado() != null) p.setEstado(request.getEstado());
-        if (request.getNumeroPartidoFifa() != null) p.setNumeroPartidoFifa(request.getNumeroPartidoFifa());
+
+        if (request.getNumeroPartidoFifa() != null && !request.getNumeroPartidoFifa().equals(p.getNumeroPartidoFifa())) {
+            if (request.getNumeroPartidoFifa() < 1 || request.getNumeroPartidoFifa() > 104) {
+                return Response.status(422)
+                        .entity("{\"codigo\":\"NUMERO_FIFA_INVALIDO\",\"mensaje\":\"numeroPartidoFifa debe estar entre 1 y 104\"}")
+                        .build();
+            }
+            Partido existente = repository.buscarPorNumeroFifa(request.getNumeroPartidoFifa());
+            if (existente != null && !existente.getId().equals(partidoId)) {
+                return Response.status(409)
+                        .entity("{\"codigo\":\"NUMERO_FIFA_DUPLICADO\",\"mensaje\":\"Ya existe un partido con ese numeroPartidoFifa\"}")
+                        .build();
+            }
+            p.setNumeroPartidoFifa(request.getNumeroPartidoFifa());
+        }
+
         if (request.getCuotaLocal() != null) p.setCuotaLocal(request.getCuotaLocal());
         if (request.getCuotaEmpate() != null) p.setCuotaEmpate(request.getCuotaEmpate());
         if (request.getCuotaVisitante() != null) p.setCuotaVisitante(request.getCuotaVisitante());
@@ -226,6 +254,36 @@ public class PartidoResource {
         return Response.ok(convertir(actualizado, true)).build();
     }
 
+    @DELETE
+    @Path("/{partidoId}")
+    public Response eliminar(@PathParam("partidoId") Long partidoId) {
+        Partido p = repository.buscarPorId(partidoId);
+        if (p == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"codigo\":\"PARTIDO_NO_ENCONTRADO\",\"mensaje\":\"Partido no encontrado\"}")
+                    .build();
+        }
+
+        if (!"PROGRAMADO".equals(p.getEstado())) {
+            return Response.status(409)
+                    .entity("{\"codigo\":\"PARTIDO_NO_ELIMINABLE\",\"mensaje\":\"Solo se pueden eliminar partidos en estado PROGRAMADO\"}")
+                    .build();
+        }
+        if (p.getGolesLocal() != null || p.getGolesVisitante() != null) {
+            return Response.status(409)
+                    .entity("{\"codigo\":\"PARTIDO_NO_ELIMINABLE\",\"mensaje\":\"No se puede eliminar porque el partido ya tiene un resultado.\"}")
+                    .build();
+        }
+        if (!golRepository.listarPorPartido(partidoId).isEmpty()) {
+            return Response.status(409)
+                    .entity("{\"codigo\":\"PARTIDO_NO_ELIMINABLE\",\"mensaje\":\"No se puede eliminar porque el partido tiene información relacionada (goles).\"}")
+                    .build();
+        }
+
+        repository.eliminar(p);
+        return Response.noContent().build();
+    }
+
     private Response validarRequest(PartidoRequestDTO request, boolean esCreacion) {
         if (esCreacion) {
             if (request.getSeleccionLocalId() == null || request.getSeleccionVisitanteId() == null
@@ -252,6 +310,7 @@ public class PartidoResource {
     private PartidoDTO convertir(Partido p, boolean incluirGoleadores) {
         PartidoDTO dto = new PartidoDTO();
         dto.setId(p.getId());
+        dto.setNumeroPartidoFifa(p.getNumeroPartidoFifa());
         dto.setSeleccionLocal(SeleccionResource.convertir(p.getSeleccionLocal()));
         dto.setSeleccionVisitante(SeleccionResource.convertir(p.getSeleccionVisitante()));
         dto.setFechaHora(p.getFechaPartido().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z");

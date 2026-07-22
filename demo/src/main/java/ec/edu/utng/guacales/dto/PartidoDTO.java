@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class PartidoDTO {
     private Long id;
+    private Integer numeroPartidoFifa;
     private SeleccionDTO seleccionLocal;
     private SeleccionDTO seleccionVisitante;
     private String fechaHora;
@@ -21,6 +22,8 @@ public class PartidoDTO {
     public PartidoDTO() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    public Integer getNumeroPartidoFifa() { return numeroPartidoFifa; }
+    public void setNumeroPartidoFifa(Integer numeroPartidoFifa) { this.numeroPartidoFifa = numeroPartidoFifa; }
     public SeleccionDTO getSeleccionLocal() { return seleccionLocal; }
     public void setSeleccionLocal(SeleccionDTO seleccionLocal) { this.seleccionLocal = seleccionLocal; }
     public SeleccionDTO getSeleccionVisitante() { return seleccionVisitante; }
