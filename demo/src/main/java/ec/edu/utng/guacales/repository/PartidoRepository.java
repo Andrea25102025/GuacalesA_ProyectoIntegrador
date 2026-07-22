@@ -14,7 +14,9 @@ public class PartidoRepository {
     private static final String BASE_QUERY =
     "SELECT p FROM Partido p " +
     "LEFT JOIN FETCH p.seleccionLocal " +
+    "LEFT JOIN FETCH p.seleccionLocal.grupo " +
     "LEFT JOIN FETCH p.seleccionVisitante " +
+    "LEFT JOIN FETCH p.seleccionVisitante.grupo " +
     "LEFT JOIN FETCH p.sede " +
     "LEFT JOIN FETCH p.grupo " +
     "WHERE 1=1";
