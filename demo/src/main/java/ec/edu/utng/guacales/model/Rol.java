@@ -1,6 +1,7 @@
 package ec.edu.utng.guacales.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,7 @@ public class Rol {
     private String descripcion;
 
     @OneToMany(mappedBy = "rol")
+    @JsonIgnore
     private List<Usuario> usuarios;
 
     public Rol() {}
