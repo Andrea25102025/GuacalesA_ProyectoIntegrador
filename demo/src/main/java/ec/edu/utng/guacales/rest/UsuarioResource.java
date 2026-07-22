@@ -59,7 +59,7 @@ public class UsuarioResource {
     @PUT
     @Path("/{id}/rol")
     @Transactional
-    public Response cambiarRol(@PathParam("id") Long id, Map<String, Integer> body) {
+    public Response cambiarRol(@PathParam("id") Long id, Map<String, Long> body) {
         Usuario u = em.find(Usuario.class, id);
         if (u == null) return Response.status(Response.Status.NOT_FOUND).build();
         Rol rol = em.find(Rol.class, body.get("rolId"));
