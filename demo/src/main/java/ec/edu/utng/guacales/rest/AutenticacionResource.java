@@ -9,6 +9,7 @@ import ec.edu.utng.guacales.model.Usuario;
 import ec.edu.utng.guacales.repository.RolRepository;
 import ec.edu.utng.guacales.repository.UsuarioRepository;
 import ec.edu.utng.guacales.service.AuditoriaService;
+import ec.edu.utng.guacales.service.UtnGolCoinClient;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -28,6 +29,9 @@ public class AutenticacionResource {
 
     @Inject
     private AuditoriaService auditoriaService;
+
+    @Inject
+    private UtnGolCoinClient utnGolCoinClient;
 
     @POST
     @Path("/registro")
@@ -63,6 +67,8 @@ public class AutenticacionResource {
         usuario.setRol(rolUsuario);
 
         Usuario creado = usuarioRepository.crear(usuario);
+
+        utnGolCoinClient.crearBilletera(creado.getId());
 
         auditoriaService.registrar(creado, "REGISTRO", "Usuario", creado.getId(), "Registro de usuario: " + correo);
 

@@ -24,6 +24,9 @@ public class AuthService {
     @Inject
     private UtnGolCoinClient utnGolCoinClient;
 
+    @Inject
+    private AuditoriaService auditoriaService;
+
     // Clave fija de 32+ caracteres solo para el entorno de desarrollo del proyecto.
     private static final SecretKey CLAVE_JWT =
             Keys.hmacShaKeyFor("guacales-utn-golmundial-2026-clave-secreta-dev".getBytes());
@@ -66,6 +69,10 @@ public class AuthService {
         // Integra con UTNGolCoin: billetera + bono de bienvenida (10 UGC).
         // Si UTNGolCoin está caído, el registro en Estadísticas sigue siendo válido.
         utnGolCoinClient.crearBilletera(u.getId());
+
+        // Auditoría: deja constancia de la creación de la billetera (BUG 3).
+        auditoriaService.registrar(u, "CREAR_BILLETERA", "Billetera", u.getId(),
+                "Billetera creada para el usuario " + u.getEmail());
 
         resultado.usuario = u;
         return resultado;
