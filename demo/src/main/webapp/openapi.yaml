@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Servicio de Estadisticas - UTN GolMundial 2026
-  description: API del Servicio de Estadisticas. Autenticacion, selecciones, grupos, sedes, partidos, resultados y estadisticas.
+  description: API del Servicio de Estadisticas. Autenticacion, selecciones, grupos, sedes, partidos, resultados, estadisticas, usuarios y auditoria.
   version: 1.0.0
 servers:
   - url: /demo/api/v1
@@ -55,6 +55,114 @@ paths:
           description: Credenciales validas
         '401':
           description: Credenciales incorrectas
+  /usuarios:
+    get:
+      summary: Listar todos los usuarios
+      tags: [Usuarios]
+      responses:
+        '200':
+          description: Lista de usuarios (sin contrasena)
+  /usuarios/{id}:
+    get:
+      summary: Consultar un usuario por ID
+      tags: [Usuarios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario encontrado
+        '404':
+          description: Usuario no encontrado
+    put:
+      summary: Editar los datos de un usuario
+      tags: [Usuarios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                email:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Usuario actualizado
+        '404':
+          description: Usuario no encontrado
+  /usuarios/{id}/estado:
+    put:
+      summary: Activar o desactivar un usuario
+      tags: [Usuarios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [activo]
+              properties:
+                activo:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Estado actualizado
+        '404':
+          description: Usuario no encontrado
+  /usuarios/{id}/rol:
+    put:
+      summary: Cambiar el rol de un usuario
+      tags: [Usuarios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rolId]
+              properties:
+                rolId:
+                  type: integer
+                  example: 2
+      responses:
+        '200':
+          description: Rol actualizado
+        '404':
+          description: Usuario no encontrado
+  /auditoria:
+    get:
+      summary: Listar el registro de auditoria
+      tags: [Auditoria]
+      responses:
+        '200':
+          description: Lista de eventos de auditoria (accion, descripcion, usuario, fecha)
   /selecciones:
     get:
       summary: Listar las 48 selecciones participantes
@@ -227,6 +335,23 @@ paths:
           description: Partido no encontrado
         '422':
           description: Datos invalidos
+    delete:
+      summary: Eliminar un partido
+      description: Solo se puede eliminar si el partido esta PROGRAMADO, sin resultado registrado y sin informacion relacionada (goles).
+      tags: [Partidos]
+      parameters:
+        - name: partidoId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Partido eliminado
+        '404':
+          description: Partido no encontrado
+        '409':
+          description: El partido no se puede eliminar (ya tiene resultado o informacion relacionada)
   /partidos/{partidoId}/resultado:
     put:
       summary: Registrar el resultado oficial de un partido
