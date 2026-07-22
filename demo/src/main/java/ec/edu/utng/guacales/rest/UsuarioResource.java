@@ -1,5 +1,6 @@
 package ec.edu.utng.guacales.rest;
 
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import ec.edu.utng.guacales.model.Usuario;
 import ec.edu.utng.guacales.model.Rol;
+import ec.edu.utng.guacales.service.AuditoriaService;
 
 @Path("/usuarios")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,6 +20,9 @@ public class UsuarioResource {
 
     @PersistenceContext(unitName = "guacalesPU")
     private EntityManager em;
+
+    @Inject
+    private AuditoriaService auditoriaService;
 
     @GET
     public Response listar() {
@@ -52,7 +57,15 @@ public class UsuarioResource {
     public Response cambiarEstado(@PathParam("id") Long id, Map<String, Boolean> body) {
         Usuario u = em.find(Usuario.class, id);
         if (u == null) return Response.status(Response.Status.NOT_FOUND).build();
-        u.setActivo(body.get("activo"));
+
+        boolean nuevoEstado = body.get("activo");
+        u.setActivo(nuevoEstado);
+
+        String detalle = nuevoEstado
+                ? "El usuario " + id + " fue activado"
+                : "El usuario " + id + " fue desactivado";
+        auditoriaService.registrar(null, "CAMBIO_ESTADO", "Usuario", id, detalle);
+
         return Response.ok(u).build();
     }
 
@@ -62,8 +75,14 @@ public class UsuarioResource {
     public Response cambiarRol(@PathParam("id") Long id, Map<String, Long> body) {
         Usuario u = em.find(Usuario.class, id);
         if (u == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+        String rolAnteriorNombre = u.getRol() != null ? u.getRol().getNombre() : "SIN_ROL";
         Rol rol = em.find(Rol.class, body.get("rolId"));
         u.setRol(rol);
+
+        String detalle = "El usuario " + id + " cambió de " + rolAnteriorNombre + " a " + rol.getNombre();
+        auditoriaService.registrar(null, "CAMBIO_ROL", "Usuario", id, detalle);
+
         return Response.ok(u).build();
     }
 }

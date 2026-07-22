@@ -15,6 +15,7 @@ import ec.edu.utng.guacales.repository.GrupoRepository;
 import ec.edu.utng.guacales.repository.PartidoRepository;
 import ec.edu.utng.guacales.repository.SedeRepository;
 import ec.edu.utng.guacales.repository.SeleccionRepository;
+import ec.edu.utng.guacales.service.AuditoriaService;
 import ec.edu.utng.guacales.service.ResultadoService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -47,6 +48,9 @@ public class PartidoResource {
 
     @Inject
     private GrupoRepository grupoRepository;
+
+    @Inject
+    private AuditoriaService auditoriaService;
 
     @GET
     public List<PartidoDTO> listar(
@@ -134,6 +138,9 @@ public class PartidoResource {
         Partido creado = repository.crear(p);
         Partido completo = repository.buscarPorId(creado.getId());
 
+        auditoriaService.registrar(null, "CREAR_PARTIDO", "Partido", completo.getId(),
+                "Se creó el partido FIFA " + completo.getNumeroPartidoFifa());
+
         return Response.created(UriBuilder.fromResource(PartidoResource.class)
                         .path(String.valueOf(completo.getId())).build())
                 .entity(convertir(completo, false))
@@ -220,6 +227,9 @@ public class PartidoResource {
         repository.actualizar(p);
         Partido actualizado = repository.buscarPorId(partidoId);
 
+        auditoriaService.registrar(null, "EDITAR_PARTIDO", "Partido", actualizado.getId(),
+                "Se editaron los datos del partido FIFA " + actualizado.getNumeroPartidoFifa());
+
         return Response.ok(convertir(actualizado, true)).build();
     }
 
@@ -251,6 +261,10 @@ public class PartidoResource {
                     .build();
         }
 
+        auditoriaService.registrar(null, "REGISTRAR_RESULTADO", "Partido", actualizado.getId(),
+                "Se registró el resultado " + actualizado.getGolesLocal() + "-" + actualizado.getGolesVisitante()
+                        + " del partido FIFA " + actualizado.getNumeroPartidoFifa());
+
         return Response.ok(convertir(actualizado, true)).build();
     }
 
@@ -280,7 +294,14 @@ public class PartidoResource {
                     .build();
         }
 
+        Long idEliminado = p.getId();
+        Integer numeroFifaEliminado = p.getNumeroPartidoFifa();
+
         repository.eliminar(p);
+
+        auditoriaService.registrar(null, "ELIMINAR_PARTIDO", "Partido", idEliminado,
+                "Se eliminó el partido FIFA " + numeroFifaEliminado);
+
         return Response.noContent().build();
     }
 
