@@ -24,7 +24,7 @@ public class UtnGolCoinClient {
         if (env != null && !env.isBlank()) {
             return env.endsWith("/") ? env : env + "/";
         }
-        return System.getProperty("utngolcoin.baseUrl", "http://localhost:5000/api/");
+        return System.getProperty("utngolcoin.baseUrl", "http://localhost:5001/api/");
     }
 
     private final HttpClient http = HttpClient.newBuilder()

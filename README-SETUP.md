@@ -55,12 +55,21 @@ export GUACALES_DB_NAME=guacales_db
 export GUACALES_DB_USER=postgres
 export GUACALES_DB_PASSWORD=TU_PASSWORD_AQUI
 export GUACALES_DB_DRIVER=postgresql
-export UTNGOLCOIN_BASE_URL=http://localhost:5000/api/
+export UTNGOLCOIN_BASE_URL=http://localhost:5001/api/
 ```
 
 `GUACALES_DB_HOST`, `GUACALES_DB_PORT`, `GUACALES_DB_NAME`, `GUACALES_DB_USER` y
 `GUACALES_DB_DRIVER` tienen los valores anteriores por defecto. La contraseña no
 tiene valor por defecto.
+
+En la red del equipo, Andrea solo cambia la IP de Mayra:
+
+```bash
+export UTNGOLCOIN_BASE_URL=http://IP_DE_MAYRA:5001/api/
+```
+
+`make backend-run` escucha en `0.0.0.0:18080`, por lo que los demás consumen
+Guacales con `http://IP_DE_ANDREA:18080/demo/api/v1/`.
 
 ## 5. Compilar y desplegar
 
@@ -109,15 +118,15 @@ Para cargar octavos manualmente:
 Con WildFly corriendo:
 
 ```bash
-curl http://localhost:8080/demo/api/v1/selecciones
-curl http://localhost:8080/demo/api/v1/grupos
-curl http://localhost:8080/demo/api/v1/sedes
-curl http://localhost:8080/demo/api/v1/partidos
+curl http://localhost:18080/demo/api/v1/selecciones
+curl http://localhost:18080/demo/api/v1/grupos
+curl http://localhost:18080/demo/api/v1/sedes
+curl http://localhost:18080/demo/api/v1/partidos
 ```
 
 Documentación interactiva (Swagger):
 ```
-http://localhost:8080/demo/swagger-ui.html
+http://localhost:18080/demo/swagger-ui.html
 ```
 
 ## Endpoints disponibles
@@ -143,10 +152,10 @@ http://localhost:8080/demo/swagger-ui.html
 ## Notas
 
 - CORS está habilitado (`Access-Control-Allow-Origin: *`), así que tu app puede llamar directo a estos endpoints sin bloqueos del navegador.
-- Cuando levantes el proyecto en tu propia máquina, `localhost:8080` te sirve directo — no necesitas la IP de red de nadie más.
-- Al **registrar un usuario**, este servicio notifica a UTNGolCoin (`POST http://localhost:5000/api/billeteras` con `{ "usuarioId": N }`) para crear la billetera y el bono de 10 UGC. Si UTNGolCoin no está arriba, el registro en Estadísticas igual se completa (solo se registra un warning en el log).
+- Cuando levantes el proyecto en tu propia máquina, `localhost:18080` te sirve directo — no necesitas la IP de red de nadie más.
+- Al **registrar un usuario**, este servicio notifica a UTNGolCoin (`POST http://localhost:5001/api/billeteras` con `{ "usuarioId": N }`) para crear la billetera y el bono de 10 UGC. Si UTNGolCoin no está arriba, el registro en Estadísticas igual se completa (solo se registra un warning en el log).
 - Al **registrar un resultado**, notifica `POST /api/liquidaciones/{partidoId}` para liquidar predicciones.
-- URL de UTNGolCoin configurable con variable de entorno `UTNGOLCOIN_BASE_URL` o propiedad JVM `-Dutngolcoin.baseUrl=...` (default `http://localhost:5000/api/`).
+- URL de UTNGolCoin configurable con variable de entorno `UTNGOLCOIN_BASE_URL` o propiedad JVM `-Dutngolcoin.baseUrl=...` (default `http://localhost:5001/api/`).
 
 ## Frontends públicos (espejo Persona 4)
 
@@ -162,8 +171,8 @@ cd frontend-estadisticas-mvc && dotnet run   # http://localhost:5080
 cd frontend-publico-mvc && dotnet run       # http://localhost:5081
 ```
 
-Ambos apuntan por defecto a esta API en `http://localhost:8080/demo/api/v1/`.
-Con `Servicios:Estadisticas:UsarSimulado=true` (valor por defecto) usan datos en memoria sin WildFly.
+Ambos apuntan por defecto a esta API en `http://localhost:18080/demo/api/v1/`.
+La integración del equipo usa `Servicios:Estadisticas:UsarSimulado=false` y datos persistentes.
 Para desarrollo integrado: `make run` desde la raíz (si hay `Makefile`) o dos terminales.
 
 ## Aportes del frontend público

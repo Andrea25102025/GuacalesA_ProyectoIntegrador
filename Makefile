@@ -13,9 +13,9 @@ GUACALES_DB_USER ?= postgres
 GUACALES_DB_DRIVER ?= postgresql
 GUACALES_DB_URL := jdbc:postgresql://$(GUACALES_DB_HOST):$(GUACALES_DB_PORT)/$(GUACALES_DB_NAME)
 HOST ?= 0.0.0.0
-HTTP_PORT ?= 8080
+HTTP_PORT ?= 18080
 MANAGEMENT_PORT ?= 9990
-UTNGOLCOIN_BASE_URL ?= http://localhost:5000/api/
+UTNGOLCOIN_BASE_URL ?= http://localhost:5001/api/
 
 .PHONY: help run estadisticas apuestas stop build clean status backend-build backend-datasource backend-deploy backend-run
 
@@ -32,7 +32,7 @@ help: ## Muestra los targets disponibles
 	@echo "  make backend-build  Compila y prueba el WAR con Maven"
 	@echo "  make backend-datasource  Crea GuacalesDS en WildFly (una sola vez)"
 	@echo "  make backend-deploy Compila y copia demo.war a WILDFLY_HOME"
-	@echo "  make backend-run    Inicia WildFly en 0.0.0.0:8080 (configurable)"
+	@echo "  make backend-run    Inicia WildFly en 0.0.0.0:18080 (configurable)"
 	@echo "  make help           Esta ayuda"
 	@echo ""
 	@echo "Nota: no uses 'cd A && dotnet run' seguido de 'cd B && ...' en la misma terminal:"
