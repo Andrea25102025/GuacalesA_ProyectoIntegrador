@@ -128,6 +128,16 @@ En el primer despliegue Hibernate crea las tablas y la aplicación inserta
 únicamente los roles técnicos `USUARIO` y `ADMINISTRADOR`. No se cargan
 selecciones, grupos, sedes ni partidos automáticamente.
 
+Si la base ya contiene los 104 partidos de una carga anterior, deja únicamente
+los partidos 1-88 con:
+
+```bash
+psql -U postgres -d guacales_db \
+  -f demo/src/main/resources/sql-scripts/limpiar-desde-octavos.sql
+```
+
+La consulta final debe mostrar `partidos_desde_octavos = 0`.
+
 Para cargar octavos manualmente:
 
 1. Crea las sedes con `POST /api/v1/sedes`.

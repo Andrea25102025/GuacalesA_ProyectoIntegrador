@@ -1,8 +1,6 @@
 -- =====================================================================
--- Actualizacion de resultados oficiales FIFA - UTN GolMundial 2026
--- Partidos 1-102: FINALIZADO con resultados reales
--- Partido 103 (Tercer puesto: Francia vs Inglaterra): PROGRAMADO
--- Partido 104 (Final: España vs Argentina): PROGRAMADO
+-- Carga de resultados hasta antes de octavos - UTN GolMundial 2026
+-- Conserva partidos 1-88. Los partidos 89-104 se crean manualmente.
 -- =====================================================================
 BEGIN;
 
@@ -78,7 +76,7 @@ UPDATE partido SET goleslocal=0, golesvisitante=0, estado='FINALIZADO' WHERE sel
 UPDATE partido SET goleslocal=3, golesvisitante=1, estado='FINALIZADO' WHERE seleccion_local_id=44 AND seleccion_visitante_id=43;
 UPDATE partido SET goleslocal=0, golesvisitante=2, estado='FINALIZADO' WHERE seleccion_local_id=47 AND seleccion_visitante_id=45;
 UPDATE partido SET goleslocal=2, golesvisitante=1, estado='FINALIZADO' WHERE seleccion_local_id=46 AND seleccion_visitante_id=48;
--- Partidos de eliminatorias (nuevos, 73-104)
+-- Dieciseisavos (partidos 73-88)
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (73, 3, 5, 7, NULL, '2026-06-28T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 0, 1);
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (76, 9, 22, 10, NULL, '2026-06-29T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 2, 1);
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (74, 17, 15, 11, NULL, '2026-06-29T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 1, 1);
@@ -95,22 +93,6 @@ INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitant
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (88, 14, 27, 8, NULL, '2026-07-03T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 1, 1);
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (86, 37, 32, 13, NULL, '2026-07-03T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 3, 2);
 INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (87, 42, 48, 14, NULL, '2026-07-03T18:00:00', 'ROUND_OF_32', 'FINALIZADO', 1, 0);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (90, 5, 10, 10, NULL, '2026-07-04T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 0, 3);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (89, 15, 33, 12, NULL, '2026-07-04T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 0, 1);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (91, 9, 35, 6, NULL, '2026-07-05T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 1, 2);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (92, 1, 45, 1, NULL, '2026-07-05T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 2, 3);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (93, 41, 29, 8, NULL, '2026-07-06T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 0, 1);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (94, 13, 25, 16, NULL, '2026-07-06T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 1, 4);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (95, 37, 27, 9, NULL, '2026-07-07T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 3, 2);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (96, 8, 42, 5, NULL, '2026-07-07T18:00:00', 'ROUND_OF_16', 'FINALIZADO', 0, 0);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (97, 33, 10, 11, NULL, '2026-07-09T18:00:00', 'QUARTERFINALS', 'FINALIZADO', 2, 0);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (98, 29, 25, 7, NULL, '2026-07-10T18:00:00', 'QUARTERFINALS', 'FINALIZADO', 2, 1);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (99, 35, 45, 13, NULL, '2026-07-11T18:00:00', 'QUARTERFINALS', 'FINALIZADO', 1, 2);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (100, 37, 8, 14, NULL, '2026-07-11T18:00:00', 'QUARTERFINALS', 'FINALIZADO', 3, 1);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (101, 33, 29, 8, NULL, '2026-07-14T18:00:00', 'SEMIFINALS', 'FINALIZADO', 0, 2);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (102, 45, 37, 9, NULL, '2026-07-15T18:00:00', 'SEMIFINALS', 'FINALIZADO', 1, 2);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (103, 33, 45, 13, NULL, '2026-07-18T18:00:00', 'TERCER_PUESTO', 'PROGRAMADO', NULL, NULL);
-INSERT INTO partido (numero_partido_fifa, seleccion_local_id, seleccion_visitante_id, sede_id, grupo_id, fecha_partido, fase, estado, goleslocal, golesvisitante) VALUES (104, 29, 37, 6, NULL, '2026-07-19T18:00:00', 'FINAL', 'PROGRAMADO', NULL, NULL);
 -- Recalcular estadisticas de las 48 selecciones (solo aplica a fase de grupos)
 UPDATE seleccion SET puntos = 0, partidosjugados = 0, partidosganados = 0,
   partidosempatados = 0, partidosperdidos = 0, golesfavor = 0, golescontra = 0;
