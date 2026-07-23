@@ -1,12 +1,12 @@
 # Servicio de Estadísticas - UTN GolMundial 2026
 
-Guía para clonar y levantar este backend en tu propia máquina y probar la integración con tu servicio (.NET / UTNGolCoin).
+Guía para compilar y desplegar el backend de forma nativa, sin Docker, y probar la integración con UTNGolCoin.
 
 ## Requisitos previos
 
 - Java 21 (JDK)
 - Maven
-- WildFly 39 (descomprimido, no hace falta instalarlo como servicio)
+- WildFly 39 preparado con el driver PostgreSQL
 - PostgreSQL instalado y corriendo
 - Git
 
@@ -14,7 +14,7 @@ Guía para clonar y levantar este backend en tu propia máquina y probar la inte
 
 ```bash
 git clone https://github.com/Andrea25102025/GuacalesA_ProyectoIntegrador.git
-cd GuacalesA_ProyectoIntegrador/demo
+cd GuacalesA_ProyectoIntegrador
 ```
 
 ## 2. Crear la base de datos
@@ -35,60 +35,76 @@ Si tu PostgreSQL usa autenticación `ident` en vez de `md5`/`scram-sha-256`, edi
 sudo systemctl restart postgresql
 ```
 
-## 3. Configurar el datasource en WildFly
+## 3. Preparar WildFly
 
-Arranca WildFly:
-```bash
-/ruta/a/wildfly/bin/standalone.sh
-```
+Esta guía parte de un `WILDFLY_HOME` ya preparado con el driver PostgreSQL
+registrado con el nombre `postgresql`. El proyecto usa el datasource JNDI
+`java:/GuacalesDS`; el `Makefile` lo crea a partir de las variables del paso
+siguiente.
 
-En otra terminal, entra a la consola CLI:
-```bash
-/ruta/a/wildfly/bin/jboss-cli.sh --connect
-```
+## 4. Configurar variables
 
-Registra el driver de PostgreSQL (primero copia el `.jar` del driver a `modules/org/postgresql/main/` con su `module.xml` — ver la carpeta `docs/` del repo si se agrega, o pide el detalle):
-```
-/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-class-name=org.postgresql.Driver)
-```
-
-Crea el datasource (debe llamarse exactamente `GuacalesDS`, el proyecto ya apunta a ese JNDI name):
-```
-data-source add --name=GuacalesDS --jndi-name=java:/GuacalesDS --driver-name=postgresql --connection-url=jdbc:postgresql://localhost:5432/guacales_db --user-name=postgres --password=TU_PASSWORD_AQUI --enabled=true
-```
-
-Prueba la conexión:
-```
-/subsystem=datasources/data-source=GuacalesDS:test-connection-in-pool
-```
-
-Debe responder `"outcome" => "success"`.
-
-## 4. Compilar y desplegar
+El `Makefile` usa estas variables para configurar `GuacalesDS` y desplegar:
 
 ```bash
-cd GuacalesA_ProyectoIntegrador/demo
+export JAVA_HOME=/ruta/al/jdk-21
+export WILDFLY_HOME=/ruta/a/wildfly
+export GUACALES_DB_HOST=localhost
+export GUACALES_DB_PORT=5432
+export GUACALES_DB_NAME=guacales_db
+export GUACALES_DB_USER=postgres
+export GUACALES_DB_PASSWORD=TU_PASSWORD_AQUI
+export GUACALES_DB_DRIVER=postgresql
+export UTNGOLCOIN_BASE_URL=http://localhost:5000/api/
+```
+
+`GUACALES_DB_HOST`, `GUACALES_DB_PORT`, `GUACALES_DB_NAME`, `GUACALES_DB_USER` y
+`GUACALES_DB_DRIVER` tienen los valores anteriores por defecto. La contraseña no
+tiene valor por defecto.
+
+## 5. Compilar y desplegar
+
+En una terminal, inicia WildFly:
+
+```bash
+make backend-run
+```
+
+En otra terminal, crea el datasource una sola vez:
+
+```bash
+make backend-datasource
+```
+
+Compila con Maven (incluye pruebas) y despliega el WAR:
+
+```bash
+make backend-deploy
+```
+
+También se puede compilar directamente:
+
+```bash
+cd demo
 mvn clean package
-cp target/demo.war /ruta/a/wildfly/standalone/deployments/
 ```
 
-Verifica que se creó `demo.war.deployed` (no `.failed`) en esa misma carpeta.
+Verifica que WildFly cree `demo.war.deployed` y no `demo.war.failed`.
 
-## 5. Cargar los datos iniciales (seed)
+## 6. Base vacía y carga manual
 
-El archivo `seed-guacales.sql` está en la raíz del repo. Cárgalo así:
+En el primer despliegue Hibernate crea las tablas y la aplicación inserta
+únicamente los roles técnicos `USUARIO` y `ADMINISTRADOR`. No se cargan
+selecciones, grupos, sedes ni partidos automáticamente.
 
-```bash
-sudo -i -u postgres psql -d guacales_db -f /ruta/al/seed-guacales.sql
-```
+Para cargar octavos manualmente:
 
-Verifica:
-```bash
-sudo -i -u postgres psql -d guacales_db -c "SELECT COUNT(*) FROM seleccion;"
-```
-Debe devolver `48`.
+1. Crea las sedes con `POST /api/v1/sedes`.
+2. Crea las selecciones con `POST /api/v1/selecciones`; `grupoId` es opcional.
+3. Crea los partidos con `POST /api/v1/partidos`, usa `fase: "OCTAVOS"` y omite
+   `grupoId`.
 
-## 6. Probar que todo responde
+## 7. Probar que todo responde
 
 Con WildFly corriendo:
 
@@ -112,9 +128,11 @@ http://localhost:8080/demo/swagger-ui.html
 - Token JWT (HS256), válido 24h.
 
 ### Datos del torneo
-- `GET /api/v1/selecciones` — las 48 selecciones
-- `GET /api/v1/grupos` — 12 grupos con tabla de posiciones
-- `GET /api/v1/sedes` — 16 sedes
+- `GET /api/v1/selecciones` — selecciones registradas
+- `POST /api/v1/selecciones` — crea una selección; `grupoId` es opcional
+- `GET /api/v1/grupos` — grupos con tabla de posiciones
+- `GET /api/v1/sedes` — sedes registradas
+- `POST /api/v1/sedes` → `{ nombre, ciudad, pais, capacidad }` — crea una sede
 - `GET /api/v1/partidos` — calendario (filtros: `?estado=`, `?grupo=`, `?fase=`, `?fecha=`
 - `GET /api/v1/partidos/{id}` — detalle de partido, incluye cuotas
 - `POST /api/v1/partidos` → `{ seleccionLocalId, seleccionVisitanteId, sedeId, grupoId, fechaHora, fase, ... }` — crea un partido nuevo

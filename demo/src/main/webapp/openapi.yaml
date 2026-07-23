@@ -165,14 +165,53 @@ paths:
           description: Lista de eventos de auditoria (accion, descripcion, usuario, fecha)
   /selecciones:
     get:
-      summary: Listar las 48 selecciones participantes
+      summary: Listar las selecciones registradas
       tags: [Selecciones]
       responses:
         '200':
           description: Lista de selecciones
+    post:
+      summary: Crear una selección
+      description: El grupo es opcional, por lo que permite registrar selecciones para fases eliminatorias sin crear grupos.
+      tags: [Selecciones]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre]
+              properties:
+                nombre:
+                  type: string
+                  example: Ecuador
+                codigoFifa:
+                  type: string
+                  example: ECU
+                confederacion:
+                  type: string
+                  example: CONMEBOL
+                esAnfitrion:
+                  type: boolean
+                  example: false
+                clasificacion:
+                  type: string
+                banderaUrl:
+                  type: string
+                grupoId:
+                  type: integer
+                  nullable: true
+                  description: ID de grupo opcional
+      responses:
+        '201':
+          description: Selección creada
+        '400':
+          description: Datos inválidos
+        '409':
+          description: Nombre o código FIFA duplicado
   /grupos:
     get:
-      summary: Listar los 12 grupos con su tabla de posiciones
+      summary: Listar los grupos con su tabla de posiciones
       tags: [Grupos]
       responses:
         '200':
@@ -184,6 +223,36 @@ paths:
       responses:
         '200':
           description: Lista de sedes
+    post:
+      summary: Crear una sede
+      tags: [Sedes]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, ciudad, pais]
+              properties:
+                nombre:
+                  type: string
+                  example: Estadio Olímpico
+                ciudad:
+                  type: string
+                  example: Quito
+                pais:
+                  type: string
+                  example: Ecuador
+                capacidad:
+                  type: integer
+                  minimum: 1
+                  nullable: true
+                  example: 35000
+      responses:
+        '201':
+          description: Sede creada
+        '400':
+          description: Datos inválidos
   /sedes/{id}:
     get:
       summary: Obtener una sede por ID
@@ -228,6 +297,7 @@ paths:
           description: Lista de partidos
     post:
       summary: Crear un nuevo partido
+      description: grupoId es opcional. Para octavos de final se puede enviar fase OCTAVOS y omitir grupoId.
       tags: [Partidos]
       requestBody:
         required: true
@@ -251,13 +321,13 @@ paths:
                   example: 3
                 grupoId:
                   type: integer
-                  example: 1
+                  nullable: true
                 fechaHora:
                   type: string
                   example: "2026-06-15T18:00:00"
                 fase:
                   type: string
-                  example: GRUPOS
+                  example: OCTAVOS
                 cuotaLocal:
                   type: number
                   example: 1.85

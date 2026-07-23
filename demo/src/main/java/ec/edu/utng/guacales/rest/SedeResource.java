@@ -4,13 +4,12 @@ import ec.edu.utng.guacales.dto.SedeDTO;
 import ec.edu.utng.guacales.model.Sede;
 import ec.edu.utng.guacales.repository.SedeRepository;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Path("/sedes")
@@ -27,6 +26,29 @@ public class SedeResource {
                 .collect(Collectors.toList());
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response crear(SedeDTO datos) {
+        String error = validar(datos);
+        if (error != null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("mensaje", error))
+                    .build();
+        }
+
+        Sede sede = new Sede();
+        sede.setNombre(datos.getNombre().trim());
+        sede.setCiudad(datos.getCiudad().trim());
+        sede.setPais(datos.getPais().trim());
+        sede.setCapacidad(datos.getCapacidad());
+        repository.crear(sede);
+
+        return Response.created(UriBuilder.fromResource(SedeResource.class)
+                        .path(String.valueOf(sede.getId())).build())
+                .entity(convertir(sede))
+                .build();
+    }
+
     @GET
     @Path("/{id}")
     public Response buscarPorId(@PathParam("id") Long id) {
@@ -37,6 +59,17 @@ public class SedeResource {
                     .build();
         }
         return Response.ok(convertir(s)).build();
+    }
+
+    static String validar(SedeDTO datos) {
+        if (datos == null) return "El cuerpo de la solicitud es obligatorio";
+        if (datos.getNombre() == null || datos.getNombre().isBlank()) return "El nombre es obligatorio";
+        if (datos.getCiudad() == null || datos.getCiudad().isBlank()) return "La ciudad es obligatoria";
+        if (datos.getPais() == null || datos.getPais().isBlank()) return "El país es obligatorio";
+        if (datos.getCapacidad() != null && datos.getCapacidad() <= 0) {
+            return "La capacidad debe ser mayor que cero";
+        }
+        return null;
     }
 
     private SedeDTO convertir(Sede s) {

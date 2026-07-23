@@ -15,7 +15,7 @@ public class SeleccionRepository {
 
     public List<Seleccion> listarTodas() {
         return em.createQuery(
-                "SELECT s FROM Seleccion s JOIN FETCH s.grupo ORDER BY s.nombre",
+                "SELECT s FROM Seleccion s LEFT JOIN FETCH s.grupo ORDER BY s.nombre",
                 Seleccion.class)
                 .getResultList();
     }
