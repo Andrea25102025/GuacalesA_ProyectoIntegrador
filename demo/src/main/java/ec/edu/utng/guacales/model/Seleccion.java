@@ -27,6 +27,9 @@ public class Seleccion {
     @Column(name = "bandera_url")
     private String banderaUrl;
 
+    @Column(nullable = false)
+    private Boolean activo = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grupo_id")
     private Grupo grupo;
@@ -55,6 +58,8 @@ public class Seleccion {
     public void setClasificacion(String clasificacion) { this.clasificacion = clasificacion; }
     public String getBanderaUrl() { return banderaUrl; }
     public void setBanderaUrl(String banderaUrl) { this.banderaUrl = banderaUrl; }
+    public Boolean getActivo() { return activo; }
+    public void setActivo(Boolean activo) { this.activo = activo; }
     public Grupo getGrupo() { return grupo; }
     public void setGrupo(Grupo grupo) { this.grupo = grupo; }
     public int getPuntos() { return puntos; }

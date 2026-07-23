@@ -5,6 +5,7 @@ public class SeleccionDTO {
     private String nombre;
     private String codigoPais;
     private String grupo;
+    private Boolean activo;
 
     public SeleccionDTO() {}
 
@@ -16,4 +17,6 @@ public class SeleccionDTO {
     public void setCodigoPais(String codigoPais) { this.codigoPais = codigoPais; }
     public String getGrupo() { return grupo; }
     public void setGrupo(String grupo) { this.grupo = grupo; }
+    public Boolean getActivo() { return activo; }
+    public void setActivo(Boolean activo) { this.activo = activo; }
 }
