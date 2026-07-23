@@ -100,6 +100,28 @@ mvn clean package
 
 Verifica que WildFly cree `demo.war.deployed` y no `demo.war.failed`.
 
+### Windows
+
+Visual Studio no administra proyectos Jakarta EE/WildFly. En Windows usa
+PowerShell con JDK 21, Maven, PostgreSQL y WildFly (o abre el código en
+IntelliJ/Eclipse):
+
+```powershell
+git switch master
+git pull
+$env:JAVA_HOME = 'C:\ruta\jdk-21'
+$env:WILDFLY_HOME = 'C:\ruta\wildfly-39'
+$env:UTNGOLCOIN_BASE_URL = 'http://IP_DE_MAYRA:5001/api/'
+
+cd demo
+mvn clean package
+Copy-Item target\demo.war "$env:WILDFLY_HOME\standalone\deployments\demo.war" -Force
+& "$env:WILDFLY_HOME\bin\standalone.bat" -b 0.0.0.0 -bmanagement 127.0.0.1 -Djboss.http.port=18080
+```
+
+El datasource `GuacalesDS` y el driver PostgreSQL se configuran una sola vez
+como se indica arriba. Permite el puerto `18080` en redes privadas.
+
 ## 6. Base vacía y carga manual
 
 En el primer despliegue Hibernate crea las tablas y la aplicación inserta
