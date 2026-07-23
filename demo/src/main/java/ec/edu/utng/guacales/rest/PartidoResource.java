@@ -239,7 +239,7 @@ public class PartidoResource {
     public Response registrarResultado(@PathParam("partidoId") Long partidoId, ResultadoDTO resultado) {
         if (resultado.getGolesLocal() == null || resultado.getGolesVisitante() == null
                 || resultado.getGolesLocal() < 0 || resultado.getGolesVisitante() < 0) {
-            return Response.status(422)
+            return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"codigo\":\"RESULTADO_INVALIDO\",\"mensaje\":\"Los goles deben ser numeros positivos\"}")
                     .build();
         }
