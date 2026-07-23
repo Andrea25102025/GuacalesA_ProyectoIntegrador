@@ -335,6 +335,9 @@ public class PartidoResource {
         dto.setSeleccionLocal(SeleccionResource.convertir(p.getSeleccionLocal()));
         dto.setSeleccionVisitante(SeleccionResource.convertir(p.getSeleccionVisitante()));
         dto.setFechaHora(p.getFechaPartido().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z");
+        if (p.getFechaActualizacion() != null) {
+            dto.setFechaActualizacion(p.getFechaActualizacion().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z");
+        }
         dto.setSede(p.getSede().getNombre() + ", " + p.getSede().getCiudad());
         dto.setFase(p.getFase());
         dto.setGrupo(p.getGrupo() != null ? p.getGrupo().getNombre() : null);

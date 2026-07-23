@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 @ApplicationScoped
 public class ResultadoService {
     @PersistenceContext(unitName = "guacalesPU")
@@ -26,6 +27,7 @@ public class ResultadoService {
         partido.setGolesLocal(golesLocal);
         partido.setGolesVisitante(golesVisitante);
         partido.setEstado("FINALIZADO");
+        partido.setFechaActualizacion(LocalDateTime.now());
         em.merge(partido);
         aplicarEstadisticas(partido.getSeleccionLocal(), partido.getSeleccionVisitante(),
                 golesLocal, golesVisitante, 1);

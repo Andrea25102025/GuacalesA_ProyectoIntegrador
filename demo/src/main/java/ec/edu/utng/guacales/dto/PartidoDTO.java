@@ -11,6 +11,7 @@ public class PartidoDTO {
     private SeleccionDTO seleccionLocal;
     private SeleccionDTO seleccionVisitante;
     private String fechaHora;
+    private String fechaActualizacion;
     private String sede;
     private String fase;
     private String grupo;
@@ -32,6 +33,8 @@ public class PartidoDTO {
     public void setFechaHora(String fechaHora) { this.fechaHora = fechaHora; }
     /** Alias para clientes que esperan fechaHoraUtc (UTNGolCoin). */
     public String getFechaHoraUtc() { return fechaHora; }
+    public String getFechaActualizacion() { return fechaActualizacion; }
+    public void setFechaActualizacion(String fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
     public String getSede() { return sede; }
     public void setSede(String sede) { this.sede = sede; }
     public String getFase() { return fase; }
